@@ -1,8 +1,9 @@
 {
   "name": "extensible-memoize",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Extensible memoize that allows plugin arbitrary cache implementation, supporting multiple layers of caches.  By default, it uses a mem cache with no expiration.",
   "main": "index.js",
+  "keywords": ["memoize", "cache"],
   "scripts": {
     "build": "tsc",
     "test": "jest"
