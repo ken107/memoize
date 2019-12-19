@@ -6,11 +6,11 @@ class DumbMemCache {
         this.mem = {};
     }
     get(key) {
-        const hashKey = key.toString();
+        const hashKey = String(key);
         return this.mem[hashKey];
     }
     set(key, value) {
-        const hashKey = key.toString();
+        const hashKey = String(key);
         this.mem[hashKey] = value;
     }
 }
