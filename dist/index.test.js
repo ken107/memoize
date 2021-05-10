@@ -20,17 +20,14 @@ test("main", () => __awaiter(void 0, void 0, void 0, function* () {
     yield expect(get(3)).resolves.toBe(45);
     yield expect(get(3)).resolves.toBe(45);
     yield expect(get(3)).resolves.toBe(45);
-    yield expect(get()).resolves.toBe(-100);
-    yield expect(get()).resolves.toBe(-100);
     yield expect(get(1)).resolves.toBe(43);
     yield expect(get(4)).resolves.toBe(46);
-    expect(fetch.mock.calls.length).toBe(5);
+    expect(fetch.mock.calls.length).toBe(4);
 }));
 test("singleton", () => __awaiter(void 0, void 0, void 0, function* () {
-    const fetch = jest.fn(() => Promise.resolve(50));
+    const fetch = jest.fn((key) => Promise.resolve(50));
     const get = index_1.default(fetch);
-    yield expect(get(1)).resolves.toBe(50);
     yield expect(get()).resolves.toBe(50);
     yield expect(get()).resolves.toBe(50);
-    expect(fetch.mock.calls.length).toBe(2);
+    expect(fetch.mock.calls.length).toBe(1);
 }));
