@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/ken107/memoize.svg?branch=master)](https://travis-ci.org/ken107/memoize)
 
 ### Usage
 
@@ -12,7 +11,7 @@ function fetchItem(key: K): Promise<V> {
 }
 ```
 
-*Note*: if key is an object, its toString() method must return a unique hash.
+*Note*: `K` must be one of `void`, `string`, or `extends {hashKey: string}` (an object with a hashKey property)
 
 
 ### Caching
