@@ -1,33 +1,61 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
-test("main", () => __awaiter(void 0, void 0, void 0, function* () {
-    const fetch = jest.fn((x) => Promise.resolve(x ? 42 + x : -100));
-    const get = index_1.default(fetch);
-    yield expect(get(1)).resolves.toBe(43);
-    yield expect(get(2)).resolves.toBe(44);
-    yield expect(get(2)).resolves.toBe(44);
+const jest = {
+    fn(func) {
+        const mock = { calls: { length: 0 } };
+        const proxy = function () {
+            mock.calls.length++;
+            return func(...arguments);
+        };
+        proxy.mock = mock;
+        return proxy;
+    }
+};
+function expect(x) {
+    return {
+        toBe(y) {
+            if (y !== x)
+                throw new Error("Assertion failed");
+        },
+        resolves: {
+            async toBe(y) {
+                if (y !== await x)
+                    throw new Error("Assertion failed");
+            }
+        }
+    };
+}
+const tests = [];
+function test(name, func) {
+    tests.push({ name, func });
+}
+async function runAll() {
+    for (const test of tests) {
+        console.log("Running", test.name);
+        await test.func();
+    }
+}
+test("main", async () => {
+    const fetch = jest.fn(({ x }) => Promise.resolve(x ? 42 + x : -100));
+    const get0 = (0, index_1.default)(fetch);
+    const get = (n) => get0({ x: n, hashKey: String(n) });
+    await expect(get(1)).resolves.toBe(43);
+    await expect(get(2)).resolves.toBe(44);
+    await expect(get(2)).resolves.toBe(44);
     expect(fetch.mock.calls.length).toBe(2);
-    yield expect(get(3)).resolves.toBe(45);
-    yield expect(get(3)).resolves.toBe(45);
-    yield expect(get(3)).resolves.toBe(45);
-    yield expect(get(1)).resolves.toBe(43);
-    yield expect(get(4)).resolves.toBe(46);
+    await expect(get(3)).resolves.toBe(45);
+    await expect(get(3)).resolves.toBe(45);
+    await expect(get(3)).resolves.toBe(45);
+    await expect(get(1)).resolves.toBe(43);
+    await expect(get(4)).resolves.toBe(46);
     expect(fetch.mock.calls.length).toBe(4);
-}));
-test("singleton", () => __awaiter(void 0, void 0, void 0, function* () {
+});
+test("singleton", async () => {
     const fetch = jest.fn((key) => Promise.resolve(50));
-    const get = index_1.default(fetch);
-    yield expect(get()).resolves.toBe(50);
-    yield expect(get()).resolves.toBe(50);
+    const get = (0, index_1.default)(fetch);
+    await expect(get()).resolves.toBe(50);
+    await expect(get()).resolves.toBe(50);
     expect(fetch.mock.calls.length).toBe(1);
-}));
+});
+runAll().catch(console.error);
